@@ -3,13 +3,14 @@ from django.db import models
 
 # Create your models here.
 
-class user(models.Model):
+class FisherMan(models.Model):
 
     user = models.OneToOneField(User, on_delete=models.PROTECT)
     id = models.AutoField(primary_key=True)
     name = models.CharField(max_length=50)
     email = models.EmailField(max_length=200)
     phone = models.CharField(max_length=11)
+    designation = models.IntegerField(choices=((0, 'Business Owner'),(1, 'Storage manager'),(2, 'Sales man')))
 
     def save(self, *args, **kwargs):
         if not self.id:
@@ -18,4 +19,4 @@ class user(models.Model):
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return self.name + ' ' + str(self.id)
+        return self.name
