@@ -4,9 +4,9 @@ from django.db import models
 
 class Product(models.Model):
 
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, primary_key=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)
-    quantity = models.PositiveIntegerField()
+    quantity = models.PositiveIntegerField(null=True, blank=True)
     category = models.IntegerField(choices=((0, 'River fish'),(1, 'Sea fish')))
     source = models.CharField(max_length=50)
     description = models.TextField(null=True, blank=True)

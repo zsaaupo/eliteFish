@@ -1,7 +1,7 @@
 from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.auth.models import User, Group
-from rest_framework.generics import ListAPIView, CreateAPIView
-from rest_framework.permissions import IsAdminUser, IsAuthenticated, BasePermission
+from rest_framework.generics import CreateAPIView
+from rest_framework.permissions import IsAuthenticated, BasePermission
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED, HTTP_200_OK, HTTP_202_ACCEPTED, HTTP_226_IM_USED
 from rest_framework.utils import json
