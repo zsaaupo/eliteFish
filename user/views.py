@@ -8,7 +8,6 @@ from rest_framework.utils import json
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
 from .models import FisherMan
-from .seriallizer import FisherManSerializer
 
 
 class IsManagement(BasePermission):
@@ -84,7 +83,6 @@ class ApiCreateFisherman(CreateAPIView):
         except Exception as ex:
             result['massage'] = str(ex)
             return Response(result)
-
 
 
 class ApiLogIn(APIView):
