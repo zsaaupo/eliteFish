@@ -1,15 +1,24 @@
 import json
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
-from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_202_ACCEPTED
+from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_202_ACCEPTED, HTTP_226_IM_USED, HTTP_304_NOT_MODIFIED
 
 from user.views import IsManagement
 from .models import *
+from .seriallizer import ProductSerializer
 
 
 # Create your views here.
 
+class APIProductList(ListAPIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        data = Product.objects.all()
+        data = ProductSerializer(data, many=True).data
+        return Response(data)
 
 class APIAddProduct(CreateAPIView):
 
@@ -43,35 +52,45 @@ class APIAddProduct(CreateAPIView):
                 result['error'] = "source"
                 return Response(result, status=HTTP_400_BAD_REQUEST)
 
-            product = Product()
-            product.name = data['name']
-            product.price = data['price']
-            product.quantity = data['quantity']
-            product.category = data['category']
-            product.source = data['source']
+            product = Product.objects.filter(name=data['name']).first()
 
-            if 'description' not in data or data['description'] == '':
-                product.description = ""
+            if not product:
+
+                product = Product()
+                product.name = data['name']
+                product.price = data['price']
+                product.quantity = data['quantity']
+                product.category = data['category']
+                product.source = data['source']
+
+                if 'description' not in data or data['description'] == '':
+                    product.description = ""
+                else:
+                    product.description = data['description']
+
+                product.save()
+
+                result['status'] = HTTP_202_ACCEPTED
+                result['massage'] = "Success"
+                result['name'] = data['name']
+                result['quantity'] = data['quantity']
+                return Response(result)
+
             else:
-                product.description = data['description']
 
-            product.save()
+                result['status'] = HTTP_226_IM_USED
+                result['massage'] = "Product already exists."
+                return Response(result)
 
-            result['status'] = HTTP_202_ACCEPTED
-            result['massage'] = "Success"
-            result['name'] = data['name']
-            result['quantity'] = data['quantity']
-            return Response(result)
         except Exception as ex:
             result['massage'] = str(ex)
             return Response(result)
 
-
-class APIUpdateProduct(CreateAPIView):
+class APIUpdateProductQuantity(CreateAPIView):
 
     permission_classes = [IsAuthenticated]
 
-    def post(self, request, *args, **kwargs):
+    def put(self, request, *args, **kwargs):
 
         result = {}
 
@@ -99,6 +118,56 @@ class APIUpdateProduct(CreateAPIView):
                 result['name'] = data['name']
                 result['quantity'] = product.quantity
                 return Response(result)
+
+            else:
+                result['status'] = HTTP_400_BAD_REQUEST
+                result['massage'] = ("Product not exist")
+                return Response(result)
+
+        except Exception as ex:
+            result['massage'] = str(ex)
+            return Response(result)
+
+class APIUpdateProductPrice(CreateAPIView):
+
+    permission_classes = [IsAuthenticated, IsManagement]
+
+    def put(self, request, *args, **kwargs):
+
+        result = {}
+
+        try:
+            data = json.loads(request.body)
+
+            if "name" not in data or data["name"] == "":
+                result["message"] = "Name is required"
+                result["error"] = "Name"
+                return Response(result, status=HTTP_400_BAD_REQUEST)
+            if 'price' not in data or data['price'] == '':
+                result['massage'] = "Price is required."
+                result['error'] = "price"
+                return Response(result, status=HTTP_400_BAD_REQUEST)
+
+
+            product = Product.objects.filter(name=data['name']).first()
+
+            if product:
+
+                if product.price != data['price']:
+
+                    product.price = data['price']
+                    product.save()
+
+                    result['status'] = HTTP_202_ACCEPTED
+                    result['massage'] = "Success"
+                    result['name'] = data['name']
+                    result['price'] = product.price
+                    return Response(result)
+
+                else:
+                    result['status'] = HTTP_304_NOT_MODIFIED
+                    result['massage'] = ("Product price is already " + str(data['price']))
+                    return Response(result)
 
             else:
                 result['status'] = HTTP_400_BAD_REQUEST
