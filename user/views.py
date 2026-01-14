@@ -1,5 +1,6 @@
 from django.contrib.auth.hashers import check_password, make_password
 from django.contrib.auth.models import User, Group
+from django.shortcuts import render
 from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.permissions import IsAuthenticated, BasePermission
 from rest_framework.response import Response
@@ -11,6 +12,8 @@ from rest_framework_simplejwt.tokens import RefreshToken
 from .models import FisherMan
 from .seriallizer import FisherManSerializer
 
+def sign_in(request):
+    return render(request, "login.html")
 
 class IsManagement(BasePermission):
     def has_permission(self, request, view):
