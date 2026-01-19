@@ -1,4 +1,6 @@
 import json
+
+from django.shortcuts import render
 from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
@@ -10,6 +12,12 @@ from .seriallizer import ProductSerializer
 
 
 # Create your views here.
+def dashboard(request):
+    return render(request, "index.html")
+
+def addProduct(request):
+    return render(request, "add_product.html")
+
 
 class APIProductList(ListAPIView):
 

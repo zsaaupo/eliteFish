@@ -30,11 +30,16 @@ const faqItems = document.querySelectorAll('.faq-item');
 document.addEventListener('DOMContentLoaded', () => {
 
     const accessToken = localStorage.getItem('access');
+    const currentPath = window.location.pathname;
 
     if (accessToken === null || accessToken.trim() === '') {
-            loginModal.style.display = 'flex';
+        if (currentPath !== '/fisher_man/log_in') {
+          window.location.href = '/fisher_man/log_in';
+        }
     } else {
-            loginModal.style.display = 'none';
+        if (currentPath === '/fisher_man/log_in') {
+          window.location.href = '/';
+        }
     }
 
     initProducts();
@@ -47,39 +52,43 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // ===== PRODUCTS MANAGEMENT =====
 function initProducts() {
-    const savedProducts = localStorage.getItem('portfolioProducts');
+    $.ajax({
+      headers: { Authorization: 'Bearer ' +localStorage.getItem('access') },
+      type: "GET",
+      url: "/fish/products_api",
+      success: function (products) {
+        for (var x = 0; x < products.length; x++) {
+          const product = products[x];
+          const categoryLabel = product.category === 0 ? "River fish" : "Sea fish";
 
-    if (savedProducts) {
-        products = JSON.parse(savedProducts);
-    } else {
-        products = [
-            {
-                id: 1,
-                name: "Modern Web Template",
-                price: 49.99,
-                description: "A sleek and responsive web template perfect for business websites.",
-                image: "https://images.unsplash.com/photo-1551650975-87deedd944c3",
-                colors: ["#6C63FF", "#36D1DC", "#34495E"],
-                category: "web"
-            },
-            {
-                id: 2,
-                name: "E-commerce UI Kit",
-                price: 89.99,
-                description: "Complete e-commerce UI kit with 50+ screens and components.",
-                image: "https://images.unsplash.com/photo-1556742049-0cfed4f6a45d",
-                colors: ["#FF6584", "#F39C12", "#2ECC71"],
-                category: "ui"
-            }
-        ];
-        saveProductsToStorage();
-    }
-} // ✅ MISSING BRACE FIXED HERE
-
-function saveProductsToStorage() {
-    localStorage.setItem('portfolioProducts', JSON.stringify(products));
+          $('.section-title').append(`
+            <div class="product-card" data-category="${product.name}">
+              <div class="product-content">
+                <h3 class="product-title">${product.name}</h3>
+                <p class="product-description">${product.description || ""}</p>
+                <div class="product-footer">
+                  <div class="product-price">Price: ${product.price}</div>
+                  <div class="product-quantity">Quantity: ${product.quantity}</div>
+                  <div class="product-source">Source: ${product.source}</div>
+                  <div class="product-category">${categoryLabel}</div>
+                  <button class="action-btn edit" onclick="editProduct('${product.name}')">
+                    <i class="fas fa-edit"></i>
+                  </button>
+                </div>
+              </div>
+            </div>
+          `);
+        }
+      },
+      error: function (errormsg) {
+        console.log(errormsg);
+      }
+    });
 }
 
+function editProduct(product_name){
+
+}
 function addProduct(product) {
     product.id = Date.now();
     products.push(product);
@@ -109,7 +118,10 @@ function initEventListeners() {
                     if(response.status == 200){
                         localStorage.setItem("full_name", response.full_name);
                         localStorage.setItem("access", response.access);
-                        loginModal.style.display = 'none';
+                        if(response.group == "Staff"){
+
+                        }
+                        window.location.href = '/';
                     }else{
                         $('.login-error').html("");
                         $('.login-error').append(`${response.responseJSON.message}`);
@@ -127,13 +139,41 @@ function initEventListeners() {
         logoutBtn.addEventListener('click', () => {
             localStorage.removeItem("full_name");
             localStorage.removeItem("access");
-            loginModal.style.display = 'flex';
+            window.location.href = '/fisher_man/log_in';
         });
     }
 
-    if (dashboardProductForm) {
+    if(dashboardProductForm){
         dashboardProductForm.addEventListener('submit', e => {
             e.preventDefault();
+
+            const productData = {
+            name: $("#productName").val(),
+            price: $("#productPrice").val(),
+            quantity: $("#productQuantity").val(),
+            source: $("#productSource").val(),
+            description: $("#productDescription").val(),
+            category: $("#productCategory").val()
+            };
+
+            $.ajax({
+            type: "POST",
+            url: "/fish/add_product_api",
+            headers: {
+            Authorization: "Bearer " + localStorage.getItem("access") // if JWT required
+            },
+            data: JSON.stringify(productData),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                $('#product_status').html("");
+                $('#product_status').append(`${response.massage}`);
+            },
+            error: function (response) {
+                $('#product_status').html("");
+                $('#product_status').append(`${response.responseJSON.message}`);
+            }
+            });
         });
     }
 }

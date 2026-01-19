@@ -246,6 +246,7 @@ class ApiLogIn(APIView):
                     data = {}
                     data['user_name'] = user.username
                     data['full_name'] = fisherMan.name
+                    data['group'] = fisherMan.user.groups.first().name
                     data['access'] = str(token.access_token)
                     data['token'] = str(token)
                     data['status'] = HTTP_200_OK
