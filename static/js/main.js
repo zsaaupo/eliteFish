@@ -28,6 +28,15 @@ const faqItems = document.querySelectorAll('.faq-item');
 
 // ===== INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', () => {
+
+    const accessToken = localStorage.getItem('access');
+
+    if (accessToken === null || accessToken.trim() === '') {
+            loginModal.style.display = 'flex';
+    } else {
+            loginModal.style.display = 'none';
+    }
+
     initProducts();
     initEventListeners();
     initTestimonialSlider();
@@ -85,31 +94,40 @@ function initEventListeners() {
         });
     }
 
-    if (loginBtn && loginModal) {
-        loginBtn.addEventListener('click', e => {
-            e.preventDefault();
-            loginModal.style.display = 'flex';
-        });
-    }
-
     if (loginForm) {
         loginForm.addEventListener('submit', e => {
             e.preventDefault();
-            const u = document.getElementById('username').value;
-            const p = document.getElementById('password').value;
-
-            if (u === 'Admin' && p === 'Admin') {
-                dashboard.style.display = 'block';
-                loginModal.style.display = 'none';
-            } else {
-                loginError.style.display = 'block';
-            }
+            var email = $("#email").val();
+            var password = $("#password").val();
+            $.ajax({
+                type: "POST",
+                url: "/fisher_man/log_in_api",
+                data: JSON.stringify({'email': email, 'password': password}),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function(response){
+                    if(response.status == 200){
+                        localStorage.setItem("full_name", response.full_name);
+                        localStorage.setItem("access", response.access);
+                        loginModal.style.display = 'none';
+                    }else{
+                        $('.login-error').html("");
+                        $('.login-error').append(`${response.responseJSON.message}`);
+                    }
+                },
+                error: function(response){
+                    $('.login-error').html("");
+                    $('.login-error').append(`${response.responseJSON.message}`);
+                }
+            });
         });
     }
 
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
-            dashboard.style.display = 'none';
+            localStorage.removeItem("full_name");
+            localStorage.removeItem("access");
+            loginModal.style.display = 'flex';
         });
     }
 
