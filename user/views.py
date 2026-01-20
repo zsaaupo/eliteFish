@@ -18,6 +18,9 @@ def sign_in(request):
 def userList(request):
     return render(request, "user_list.html")
 
+def editFisherman(request, email):
+    return render(request, "edit_fisherman.html")
+
 class IsManagement(BasePermission):
     def has_permission(self, request, view):
         return bool(request.user and request.user.groups.filter(name__in=["Manager", "Owner"]).exists())
@@ -29,6 +32,15 @@ class APIFishermanList(ListAPIView):
     def get(self, request, *args, **kwargs):
         data = FisherMan.objects.all()
         data = FisherManSerializer(data, many=True).data
+        return Response(data)
+
+class APIEditFisherman(ListAPIView):
+
+    permission_classes = [IsAuthenticated, IsManagement]
+
+    def get(self, request, email):
+        data = FisherMan.objects.filter(email=email).first()
+        data = FisherManSerializer(data).data
         return Response(data)
 
 class ApiCreateFisherman(CreateAPIView):

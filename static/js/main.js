@@ -21,6 +21,7 @@ const dashboardProductForm = document.getElementById('dashboardProductForm');
 const editProductForm = document.getElementById('editProductForm');
 const saleProductForm = document.getElementById('saleProductForm');
 const restockProductForm = document.getElementById('restockProductForm');
+const editFishermanForm = document.getElementById('editFishermanForm');
 const colorOptions = document.querySelectorAll('#colorOptions .color-option');
 const selectedColorsInput = document.getElementById('selectedColors');
 const filterBtns = document.querySelectorAll('.filter-btn');
@@ -170,6 +171,26 @@ function restockProduct(){
         });
 }
 
+function editFisherman(){
+        var path = window.location.pathname.split('/');
+        var url = "/fisher_man/fisherman_edit_api/"+path[3];
+        console.log(url)
+        $.ajax({
+        headers: { Authorization: 'Bearer ' +localStorage.getItem('access')},
+        type: "GET",
+        url: url,
+        success: function (fisherman) {
+            $("#editFishermanName").val(fisherman.name);
+            $("#editFishermanEmail").val(fisherman.email);
+            $("#editFishermanPhone").val(fisherman.phone);
+            $("#editFishermanDesignation").val(fisherman.designation);
+        },
+        error: function (errormsg) {
+            console.log(errormsg);
+        }
+        });
+}
+
 // ===== USER MANAGEMENT =====
 function fishermanList(){
     $.ajax({
@@ -208,7 +229,7 @@ success: function (fishermen) {
                   <button class="action-btn edit" onclick="activeFisherman('${fisherman.email}')">
                       <i class="fa-solid fa-circle-check"></i>
                   </button>`}
-              <button class="action-btn edit" onclick="window.location.href='/fisher_man/view/${fisherman.id}'">
+              <button class="action-btn edit" onclick="window.location.href='/fisher_man/edit_user/${fisherman.email}'">
                 <i class="fas fa-edit"></i>
               </button>
             </div>
@@ -454,6 +475,37 @@ function initEventListeners() {
             error: function (response) {
                 $('#product_status').html("");
                 $('#product_status').append(`${response.responseJSON.message}`);
+            }
+            });
+        });
+    }
+
+    if(editFishermanForm){
+        editFishermanForm.addEventListener('submit', e => {
+            e.preventDefault();
+
+            const productData = {
+            email: $("#editFishermanEmail").val(),
+            name: $("#editFishermanName").val(),
+            phone: $("#editFishermanPhone").val(),
+            };
+
+            $.ajax({
+            type: "PUT",
+            url: "/fisher_man/update_fisherman_api",
+            headers: {
+            Authorization: "Bearer " + localStorage.getItem("access")
+            },
+            data: JSON.stringify(productData),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                $('#fisherman_status').html("");
+                $('#fisherman_status').append(`${response.massage}`);
+            },
+            error: function (response) {
+                $('#fisherman_status').html("");
+                $('#fisherman_status').append(`${response.responseJSON.message}`);
             }
             });
         });
