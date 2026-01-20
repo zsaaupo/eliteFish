@@ -20,7 +20,7 @@ Follow these steps to set up the project locally.
 ### Installation Steps
 1.  **Clone the Repository**
     ```bash
-    git clone <repository-url>
+    git clone https://github.com/zsaaupo/eliteFish
     cd eliteFish
     ```
 
@@ -38,12 +38,7 @@ Follow these steps to set up the project locally.
     pip install -r requirements.txt
     ```
 
-4.  **Apply Migrations**
-    ```bash
-    python manage.py migrate
-    ```
-
-5.  **Run Development Server**
+4.  **Run Development Server**
     ```bash
     python manage.py runserver
     ```
