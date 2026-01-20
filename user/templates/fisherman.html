@@ -1,0 +1,50 @@
+{% extends 'layout/base.html' %}
+{% block title %}
+  Dashboard
+{% endblock %}
+{% block body %}
+    <section class="users" id="users">
+        <div class="container">
+            <div class="dashboard-section">
+              <h3>Fisherman</h3>
+                <form id="FishermanForm">
+                  {% csrf_token %}
+                  <div class="form-group">
+                    <label for="FishermanName">Name</label>
+                    <input type="text" id="FishermanName" class="form-input" placeholder="Enter name" disabled>
+                  </div>
+                  <div class="form-group">
+                    <label for="FishermanEmail">Email</label>
+                    <input type="email" id="FishermanEmail" class="form-input" placeholder="Enter email" disabled>
+                  </div>
+                  <div class="form-group">
+                    <label for="FishermanPhone">Phone</label>
+                    <input type="text" id="FishermanPhone" class="form-input" placeholder="Enter phone" disabled>
+                  </div>
+                  <div class="form-group">
+                    <label for="FishermanDesignation">Designation</label>
+                    <select id="FishermanDesignation" class="form-input" disabled>
+                      <option value="0">Business Owner</option>
+                      <option value="1">Storage Manager</option>
+                      <option value="2">Sales Man</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="FishermanPassword">New password</label>
+                    <input type="text" id="FishermanPassword" class="form-input" placeholder="Enter new password">
+                  </div>
+                  <h3 id="fisherman_status"></h3>
+                  <button type="submit" class="btn btn-primary mt-3">
+                    <i class="fas fa-save"></i>
+                    <span>Change password</span>
+                  </button>
+                </form>
+            </div>
+        </div>
+    </section>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      fisherman(localStorage.getItem("email"));
+    });
+  </script>
+{% endblock %}

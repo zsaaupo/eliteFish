@@ -21,6 +21,9 @@ def userList(request):
 def editFisherman(request, email):
     return render(request, "edit_fisherman.html")
 
+def fisherman(request):
+    return render(request, "fisherman.html")
+
 class IsManagement(BasePermission):
     def has_permission(self, request, view):
         return bool(request.user and request.user.groups.filter(name__in=["Manager", "Owner"]).exists())
@@ -261,6 +264,7 @@ class ApiLogIn(APIView):
                     data = {}
                     data['user_name'] = user.username
                     data['full_name'] = fisherMan.name
+                    data['email'] = fisherMan.email
                     data['group'] = fisherMan.user.groups.first().name
                     data['access'] = str(token.access_token)
                     data['token'] = str(token)

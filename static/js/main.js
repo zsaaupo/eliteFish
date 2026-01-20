@@ -22,6 +22,7 @@ const editProductForm = document.getElementById('editProductForm');
 const saleProductForm = document.getElementById('saleProductForm');
 const restockProductForm = document.getElementById('restockProductForm');
 const editFishermanForm = document.getElementById('editFishermanForm');
+const FishermanForm = document.getElementById('FishermanForm');
 const colorOptions = document.querySelectorAll('#colorOptions .color-option');
 const selectedColorsInput = document.getElementById('selectedColors');
 const filterBtns = document.querySelectorAll('.filter-btn');
@@ -191,6 +192,25 @@ function editFisherman(){
         });
 }
 
+function fisherman(email){
+        var url = "/fisher_man/fisherman_edit_api/"+email;
+        console.log(url)
+        $.ajax({
+        headers: { Authorization: 'Bearer ' +localStorage.getItem('access')},
+        type: "GET",
+        url: url,
+        success: function (fisherman) {
+            $("#FishermanName").val(fisherman.name);
+            $("#FishermanEmail").val(fisherman.email);
+            $("#FishermanPhone").val(fisherman.phone);
+            $("#FishermanDesignation").val(fisherman.designation);
+        },
+        error: function (errormsg) {
+            console.log(errormsg);
+        }
+        });
+}
+
 // ===== USER MANAGEMENT =====
 function fishermanList(){
     $.ajax({
@@ -329,6 +349,7 @@ function initEventListeners() {
                     if(response.status == 200){
                         localStorage.setItem("full_name", response.full_name);
                         localStorage.setItem("access", response.access);
+                        localStorage.setItem("email", response.email);
                         localStorage.setItem("group", response.group);
                         window.location.href = '/';
                     }else{
@@ -348,6 +369,8 @@ function initEventListeners() {
         logoutBtn.addEventListener('click', () => {
             localStorage.removeItem("full_name");
             localStorage.removeItem("access");
+            localStorage.removeItem("email");
+            localStorage.removeItem("group");
             window.location.href = '/fisher_man/log_in';
         });
     }
@@ -506,6 +529,35 @@ function initEventListeners() {
             error: function (response) {
                 $('#fisherman_status').html("");
                 $('#fisherman_status').append(`${response.responseJSON.message}`);
+            }
+            });
+        });
+    }
+
+    if(FishermanForm){
+        FishermanForm.addEventListener('submit', e => {
+            e.preventDefault();
+
+            const data = {
+                password: $("#FishermanPassword").val()
+            };
+            console.log(data);
+            $.ajax({
+            type: "PUT",
+            url: "/fisher_man/change_password_api",
+            headers: {
+            Authorization: "Bearer " + localStorage.getItem("access")
+            },
+            data: JSON.stringify(data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                $('#fisherman_status').html("");
+                $('#fisherman_status').append(`${response.massage}`);
+            },
+            error: function (response) {
+                $('#fisherman_status').html("");
+                $('#fisherman_status').append(`${response.massage}`);
             }
             });
         });

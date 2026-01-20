@@ -5,6 +5,7 @@ urlpatterns = [
     path('log_in', sign_in),
     path('user_list', userList),
     path('edit_user/<str:email>', editFisherman),
+    path('user', fisherman),
     path('log_in_api', ApiLogIn.as_view()),
     path('add_fisherman_api', ApiCreateFisherman.as_view()),
     path('update_fisherman_api', ApiUpdateFisherman.as_view()),
