@@ -20,6 +20,7 @@ const dashboardProducts = document.getElementById('dashboardProducts');
 const dashboardProductForm = document.getElementById('dashboardProductForm');
 const editProductForm = document.getElementById('editProductForm');
 const saleProductForm = document.getElementById('saleProductForm');
+const restockProductForm = document.getElementById('restockProductForm');
 const colorOptions = document.querySelectorAll('#colorOptions .color-option');
 const selectedColorsInput = document.getElementById('selectedColors');
 const filterBtns = document.querySelectorAll('.filter-btn');
@@ -103,29 +104,29 @@ function initProducts() {
     });
 }
 
-function editProduct(product_name){
-        var path = window.location.pathname.split('/');
-        var url = "/fish/edit_product_api/"+path[3];
-        console.log(url)
-        $.ajax({
-        headers: { Authorization: 'Bearer ' +localStorage.getItem('access')},
-        type: "GET",
-        url: url,
-        success: function (product) {
-            $("#editProductName").val(product.name);
-            $("#editProductPrice").val(product.price);
-            $("#editProductQuantity").val(product.quantity);
-            $("#editProductSource").val(product.source);
-            $("#editProductDescription").val(product.description);
-            $("#editProductCategory").val(product.category);
-        },
-        error: function (errormsg) {
-            console.log(errormsg);
-        }
-        });
+function editProduct(){
+    var path = window.location.pathname.split('/');
+    var url = "/fish/edit_product_api/"+path[3];
+    console.log(url)
+    $.ajax({
+    headers: { Authorization: 'Bearer ' +localStorage.getItem('access')},
+    type: "GET",
+    url: url,
+    success: function (product) {
+        $("#editProductName").val(product.name);
+        $("#editProductPrice").val(product.price);
+        $("#editProductQuantity").val(product.quantity);
+        $("#editProductSource").val(product.source);
+        $("#editProductDescription").val(product.description);
+        $("#editProductCategory").val(product.category);
+    },
+    error: function (errormsg) {
+        console.log(errormsg);
+    }
+    });
 }
 
-function saleProduct(product_name){
+function saleProduct(){
         var path = window.location.pathname.split('/');
         var url = "/fish/edit_product_api/"+path[3];
         console.log(url)
@@ -147,7 +148,7 @@ function saleProduct(product_name){
         });
 }
 
-function restockProduct(product_name){
+function restockProduct(){
         var path = window.location.pathname.split('/');
         var url = "/fish/edit_product_api/"+path[3];
         console.log(url)
@@ -167,6 +168,120 @@ function restockProduct(product_name){
             console.log(errormsg);
         }
         });
+}
+
+// ===== USER MANAGEMENT =====
+function fishermanList(){
+    $.ajax({
+      headers: { Authorization: 'Bearer ' +localStorage.getItem('access') },
+      type: "GET",
+      url: "/fisher_man/fisherman_list_api",
+success: function (fishermen) {
+  $('.section-user').html("");
+  for (var x = 0; x < fishermen.length; x++) {
+    const fisherman = fishermen[x];
+    let designation = "";
+
+    if (fisherman.designation === 0) {
+      designation = "Owner";
+    } else if (fisherman.designation === 1) {
+      designation = "Manager";
+    } else if (fisherman.designation === 2) {
+      designation = "Staff";
+    }
+
+    $('.section-user').append(`
+      <div class="product-card">
+        <div class="product-content">
+          <h3 class="product-title">${fisherman.email}</h3>
+          <p class="product-description">${designation}</p>
+          <div class="product-footer">
+            <div class="product-price">Active: ${fisherman.active}</div>
+            <div class="product-quantity">Name: ${fisherman.name}</div>
+            <div class="product-source">Phone: ${fisherman.phone}</div>
+            <div class="product-actions">
+            ${fisherman.active === true ? `
+                    <button class="action-btn edit" onclick="deactiveFisherman('${fisherman.email}')">
+                      <i class="fa-solid fa-ban"></i>
+                    </button>
+                  ` : `
+                  <button class="action-btn edit" onclick="activeFisherman('${fisherman.email}')">
+                      <i class="fa-solid fa-circle-check"></i>
+                  </button>`}
+              <button class="action-btn edit" onclick="window.location.href='/fisher_man/view/${fisherman.id}'">
+                <i class="fas fa-edit"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    `);
+  }
+},
+      error: function (errormsg) {
+        console.log(errormsg);
+      }
+    });
+}
+
+function activeFisherman(email) {
+  const data = {
+    email: email,
+    active: 1
+  };
+
+  $.ajax({
+    type: "PUT",
+    url: "/fisher_man/update_fisherman_api",
+    headers: {
+      Authorization: "Bearer " + localStorage.getItem("access")
+    },
+    data: JSON.stringify(data),
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    success: function (response) {
+      console.log(response);
+      fishermanList();
+    },
+    error: function (response) {
+      $('#product_status').html("");
+      if (response.responseJSON && response.responseJSON.message) {
+        $('#product_status').append(response.responseJSON.message);
+      } else {
+        $('#product_status').append("An error occurred");
+      }
+    }
+  });
+}
+
+function deactiveFisherman(email) {
+  const data = {
+    email: email,
+    active: 0
+  };
+
+  $.ajax({
+    type: "PUT",
+    url: "/fisher_man/update_fisherman_api",
+    headers: {
+      Authorization: "Bearer " + localStorage.getItem("access")
+    },
+    data: JSON.stringify(data),
+    contentType: "application/json; charset=utf-8",
+    dataType: "json",
+    success: function (response) {
+      console.log(response);
+      fishermanList();
+    },
+    error: function (response) {
+      $('#product_status').html("");
+      if (response.responseJSON && response.responseJSON.message) {
+        $('#product_status').append(response.responseJSON.message);
+      } else {
+        $('#product_status').append("An error occurred");
+      }
+    }
+  });
 }
 
 
@@ -224,8 +339,6 @@ function initEventListeners() {
             name: $("#editProductName").val(),
             price: $("#editProductPrice").val()
             };
-
-            console.log(productData);
 
             $.ajax({
             type: "PUT",

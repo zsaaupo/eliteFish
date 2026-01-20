@@ -122,6 +122,20 @@ p {
     transform: translateX(-50%);
 }
 
+.section-user {
+    text-align: center;
+    margin-bottom: 4rem;
+}
+
+.section-user h2 {
+    display: inline-block;
+}
+
+.section-user h2::after {
+    left: 50%;
+    transform: translateX(-50%);
+}
+
 /* ===== LAYOUT & CONTAINER ===== */
 .container {
     width: 100%;
@@ -514,6 +528,10 @@ header.scrolled {
 
 /* ===== PRODUCTS SECTION ===== */
 .products {
+    position: relative;
+}
+
+.users {
     position: relative;
 }
 

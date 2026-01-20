@@ -15,6 +15,9 @@ from .seriallizer import FisherManSerializer
 def sign_in(request):
     return render(request, "login.html")
 
+def userList(request):
+    return render(request, "user_list.html")
+
 class IsManagement(BasePermission):
     def has_permission(self, request, view):
         return bool(request.user and request.user.groups.filter(name__in=["Manager", "Owner"]).exists())
