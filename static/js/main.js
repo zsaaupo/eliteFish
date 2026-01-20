@@ -19,6 +19,7 @@ const productsGrid = document.getElementById('productsGrid');
 const dashboardProducts = document.getElementById('dashboardProducts');
 const dashboardProductForm = document.getElementById('dashboardProductForm');
 const editProductForm = document.getElementById('editProductForm');
+const saleProductForm = document.getElementById('saleProductForm');
 const colorOptions = document.querySelectorAll('#colorOptions .color-option');
 const selectedColorsInput = document.getElementById('selectedColors');
 const filterBtns = document.querySelectorAll('.filter-btn');
@@ -30,9 +31,14 @@ const faqItems = document.querySelectorAll('.faq-item');
 // ===== INITIALIZATION =====
 document.addEventListener('DOMContentLoaded', () => {
 
+
     const accessToken = localStorage.getItem('access');
+    const group = localStorage.getItem('group');
     const currentPath = window.location.pathname;
 
+    if (group === "Staff") {
+        $('.managements').hide();
+    }
     if (accessToken === null || accessToken.trim() === '') {
         if (currentPath !== '/fisher_man/log_in') {
           window.location.href = '/fisher_man/log_in';
@@ -72,9 +78,19 @@ function initProducts() {
                   <div class="product-quantity">Quantity: ${product.quantity}</div>
                   <div class="product-source">Source: ${product.source}</div>
                   <div class="product-category">${categoryLabel}</div>
-                  <button class="action-btn edit" onclick="window.location.href='/fish/edit_product/${product.name}'">
-                    <i class="fas fa-edit"></i>
+                  <div class="product-actions">
+                  ${localStorage.getItem("group") !== "Staff" ? `
+                    <button class="action-btn edit" onclick="window.location.href='/fish/edit_product/${product.name}'">
+                      <i class="fas fa-edit"></i>
+                    </button>
+                    <button class="action-btn edit" onclick="window.location.href='/fish/restock_product/${product.name}'">
+                      <i class="fa-solid fa-plus"></i>
+                    </button>
+                  ` : ""}
+                  <button class="action-btn edit" onclick="window.location.href='/fish/sale/${product.name}'">
+                    <i class="fa-solid fa-shop"></i>
                   </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -109,11 +125,50 @@ function editProduct(product_name){
         });
 }
 
-function addProduct(product) {
-    product.id = Date.now();
-    products.push(product);
-    saveProductsToStorage();
+function saleProduct(product_name){
+        var path = window.location.pathname.split('/');
+        var url = "/fish/edit_product_api/"+path[3];
+        console.log(url)
+        $.ajax({
+        headers: { Authorization: 'Bearer ' +localStorage.getItem('access')},
+        type: "GET",
+        url: url,
+        success: function (product) {
+            $("#saleProductName").val(product.name);
+            $("#saleProductPrice").val(product.price);
+            $("#saleProductQuantity").val(product.quantity);
+            $("#saleProductSource").val(product.source);
+            $("#saleProductDescription").val(product.description);
+            $("#saleProductCategory").val(product.category);
+        },
+        error: function (errormsg) {
+            console.log(errormsg);
+        }
+        });
 }
+
+function restockProduct(product_name){
+        var path = window.location.pathname.split('/');
+        var url = "/fish/edit_product_api/"+path[3];
+        console.log(url)
+        $.ajax({
+        headers: { Authorization: 'Bearer ' +localStorage.getItem('access')},
+        type: "GET",
+        url: url,
+        success: function (product) {
+            $("#restockProductName").val(product.name);
+            $("#restockProductPrice").val(product.price);
+            $("#restockProductQuantity").val(product.quantity);
+            $("#restockProductSource").val(product.source);
+            $("#restockProductDescription").val(product.description);
+            $("#restockProductCategory").val(product.category);
+        },
+        error: function (errormsg) {
+            console.log(errormsg);
+        }
+        });
+}
+
 
 // ===== EVENT LISTENERS =====
 function initEventListeners() {
@@ -138,9 +193,7 @@ function initEventListeners() {
                     if(response.status == 200){
                         localStorage.setItem("full_name", response.full_name);
                         localStorage.setItem("access", response.access);
-                        if(response.group == "Staff"){
-
-                        }
+                        localStorage.setItem("group", response.group);
                         window.location.href = '/';
                     }else{
                         $('.login-error').html("");
@@ -177,6 +230,70 @@ function initEventListeners() {
             $.ajax({
             type: "PUT",
             url: "/fish/update_price_api",
+            headers: {
+            Authorization: "Bearer " + localStorage.getItem("access")
+            },
+            data: JSON.stringify(productData),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                $('#product_status').html("");
+                $('#product_status').append(`${response.massage}`);
+            },
+            error: function (response) {
+                $('#product_status').html("");
+                $('#product_status').append(`${response.responseJSON.message}`);
+            }
+            });
+        });
+    }
+
+    if(saleProductForm){
+        saleProductForm.addEventListener('submit', e => {
+            e.preventDefault();
+
+            const productData = {
+            name: $("#saleProductName").val(),
+            quantity: parseFloat($("#saleQuantity").val()) * -1
+            };
+
+            console.log(productData);
+
+            $.ajax({
+            type: "PUT",
+            url: "/fish/update_quantity_api",
+            headers: {
+            Authorization: "Bearer " + localStorage.getItem("access")
+            },
+            data: JSON.stringify(productData),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                $('#product_status').html("");
+                $('#product_status').append(`${response.massage}`);
+            },
+            error: function (response) {
+                $('#product_status').html("");
+                $('#product_status').append(`${response.responseJSON.message}`);
+            }
+            });
+        });
+    }
+
+    if(restockProductForm){
+        restockProductForm.addEventListener('submit', e => {
+            e.preventDefault();
+
+            const productData = {
+            name: $("#restockProductName").val(),
+            quantity: parseFloat($("#restockQuantity").val())
+            };
+
+            console.log(productData);
+
+            $.ajax({
+            type: "PUT",
+            url: "/fish/update_quantity_api",
             headers: {
             Authorization: "Bearer " + localStorage.getItem("access")
             },

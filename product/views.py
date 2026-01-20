@@ -21,6 +21,12 @@ def addProduct(request):
 def editProduct(request, name):
     return render(request, "edit_product.html")
 
+def saleProduct(request, name):
+    return render(request, "sale_product.html")
+
+def restockProduct(request, name):
+    return render(request, "restock.html")
+
 class APIProductList(ListAPIView):
 
     permission_classes = [IsAuthenticated]
