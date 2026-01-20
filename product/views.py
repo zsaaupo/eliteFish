@@ -1,7 +1,7 @@
 import json
 
 from django.shortcuts import render
-from rest_framework.generics import CreateAPIView, ListAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView, RetrieveAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_202_ACCEPTED, HTTP_226_IM_USED, HTTP_304_NOT_MODIFIED
@@ -18,6 +18,8 @@ def dashboard(request):
 def addProduct(request):
     return render(request, "add_product.html")
 
+def editProduct(request, name):
+    return render(request, "edit_product.html")
 
 class APIProductList(ListAPIView):
 
@@ -26,6 +28,15 @@ class APIProductList(ListAPIView):
     def get(self, request, *args, **kwargs):
         data = Product.objects.all()
         data = ProductSerializer(data, many=True).data
+        return Response(data)
+
+class APIEditProduct(ListAPIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, name):
+        data = Product.objects.filter(name=name).first()
+        data = ProductSerializer(data).data
         return Response(data)
 
 class APIAddProduct(CreateAPIView):

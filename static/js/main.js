@@ -18,6 +18,7 @@ const refreshProductsBtn = document.getElementById('refreshProducts');
 const productsGrid = document.getElementById('productsGrid');
 const dashboardProducts = document.getElementById('dashboardProducts');
 const dashboardProductForm = document.getElementById('dashboardProductForm');
+const editProductForm = document.getElementById('editProductForm');
 const colorOptions = document.querySelectorAll('#colorOptions .color-option');
 const selectedColorsInput = document.getElementById('selectedColors');
 const filterBtns = document.querySelectorAll('.filter-btn');
@@ -71,7 +72,7 @@ function initProducts() {
                   <div class="product-quantity">Quantity: ${product.quantity}</div>
                   <div class="product-source">Source: ${product.source}</div>
                   <div class="product-category">${categoryLabel}</div>
-                  <button class="action-btn edit" onclick="editProduct('${product.name}')">
+                  <button class="action-btn edit" onclick="window.location.href='/fish/edit_product/${product.name}'">
                     <i class="fas fa-edit"></i>
                   </button>
                 </div>
@@ -87,8 +88,27 @@ function initProducts() {
 }
 
 function editProduct(product_name){
-
+        var path = window.location.pathname.split('/');
+        var url = "/fish/edit_product_api/"+path[3];
+        console.log(url)
+        $.ajax({
+        headers: { Authorization: 'Bearer ' +localStorage.getItem('access')},
+        type: "GET",
+        url: url,
+        success: function (product) {
+            $("#editProductName").val(product.name);
+            $("#editProductPrice").val(product.price);
+            $("#editProductQuantity").val(product.quantity);
+            $("#editProductSource").val(product.source);
+            $("#editProductDescription").val(product.description);
+            $("#editProductCategory").val(product.category);
+        },
+        error: function (errormsg) {
+            console.log(errormsg);
+        }
+        });
 }
+
 function addProduct(product) {
     product.id = Date.now();
     products.push(product);
@@ -143,6 +163,38 @@ function initEventListeners() {
         });
     }
 
+    if(editProductForm){
+        editProductForm.addEventListener('submit', e => {
+            e.preventDefault();
+
+            const productData = {
+            name: $("#editProductName").val(),
+            price: $("#editProductPrice").val()
+            };
+
+            console.log(productData);
+
+            $.ajax({
+            type: "PUT",
+            url: "/fish/update_price_api",
+            headers: {
+            Authorization: "Bearer " + localStorage.getItem("access")
+            },
+            data: JSON.stringify(productData),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                $('#product_status').html("");
+                $('#product_status').append(`${response.massage}`);
+            },
+            error: function (response) {
+                $('#product_status').html("");
+                $('#product_status').append(`${response.responseJSON.message}`);
+            }
+            });
+        });
+    }
+
     if(dashboardProductForm){
         dashboardProductForm.addEventListener('submit', e => {
             e.preventDefault();
@@ -160,7 +212,7 @@ function initEventListeners() {
             type: "POST",
             url: "/fish/add_product_api",
             headers: {
-            Authorization: "Bearer " + localStorage.getItem("access") // if JWT required
+            Authorization: "Bearer " + localStorage.getItem("access")
             },
             data: JSON.stringify(productData),
             contentType: "application/json; charset=utf-8",
