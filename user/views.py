@@ -24,6 +24,9 @@ def editFisherman(request, email):
 def fisherman(request):
     return render(request, "fisherman.html")
 
+def addFisherman(request):
+    return render(request, "add_fisherman.html")
+
 class IsManagement(BasePermission):
     def has_permission(self, request, view):
         return bool(request.user and request.user.groups.filter(name__in=["Manager", "Owner"]).exists())
@@ -92,6 +95,7 @@ class ApiCreateFisherman(CreateAPIView):
                     user.groups.add(Group.objects.get(name='Manager'))
                 if data['designation'] == 0:
                     user.groups.add(Group.objects.get(name='Owner'))
+                user.save()
 
                 fisherMan = FisherMan()
                 fisherMan.name = data['name']

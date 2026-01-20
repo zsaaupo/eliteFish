@@ -4,6 +4,7 @@ from .views import *
 urlpatterns = [
     path('log_in', sign_in),
     path('user_list', userList),
+    path('add', addFisherman),
     path('edit_user/<str:email>', editFisherman),
     path('user', fisherman),
     path('log_in_api', ApiLogIn.as_view()),

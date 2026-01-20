@@ -23,6 +23,7 @@ const saleProductForm = document.getElementById('saleProductForm');
 const restockProductForm = document.getElementById('restockProductForm');
 const editFishermanForm = document.getElementById('editFishermanForm');
 const FishermanForm = document.getElementById('FishermanForm');
+const addFishermanForm = document.getElementById('addFishermanForm');
 const colorOptions = document.querySelectorAll('#colorOptions .color-option');
 const selectedColorsInput = document.getElementById('selectedColors');
 const filterBtns = document.querySelectorAll('.filter-btn');
@@ -545,6 +546,39 @@ function initEventListeners() {
             $.ajax({
             type: "PUT",
             url: "/fisher_man/change_password_api",
+            headers: {
+            Authorization: "Bearer " + localStorage.getItem("access")
+            },
+            data: JSON.stringify(data),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                $('#fisherman_status').html("");
+                $('#fisherman_status').append(`${response.massage}`);
+            },
+            error: function (response) {
+                $('#fisherman_status').html("");
+                $('#fisherman_status').append(`${response.massage}`);
+            }
+            });
+        });
+    }
+
+    if(addFishermanForm){
+        addFishermanForm.addEventListener('submit', e => {
+            e.preventDefault();
+
+            const data = {
+                email: $("#addFishermanEmail").val(),
+                name: $("#addFishermanName").val(),
+                phone: $("#addFishermanPhone").val(),
+                designation: parseInt($("#addFishermanDesignation").val(), 10),
+                password: $("#addFishermanPassword").val(),
+            };
+            console.log(data);
+            $.ajax({
+            type: "POST",
+            url: "/fisher_man/add_fisherman_api",
             headers: {
             Authorization: "Bearer " + localStorage.getItem("access")
             },

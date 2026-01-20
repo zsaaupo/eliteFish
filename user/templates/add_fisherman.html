@@ -1,0 +1,50 @@
+{% extends 'layout/base.html' %}
+{% block title %}
+  Add Fisherman
+{% endblock %}
+{% block body %}
+    <section class="users" id="users">
+        <div class="container">
+            <div class="dashboard-section">
+              <h3>Add Fisherman</h3>
+                <form id="addFishermanForm">
+                  {% csrf_token %}
+                  <div class="form-group">
+                    <label for="addFishermanName">Name</label>
+                    <input type="text" id="addFishermanName" class="form-input" placeholder="Enter name" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="addFishermanEmail">Email</label>
+                    <input type="email" id="addFishermanEmail" class="form-input" placeholder="Enter email" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="addFishermanPhone">Phone</label>
+                    <input type="text" id="addFishermanPhone" class="form-input" placeholder="Enter phone" required>
+                  </div>
+                  <div class="form-group">
+                    <label for="addFishermanDesignation">Designation</label>
+                    <select id="addFishermanDesignation" class="form-input" required>
+                      <option value="0">Business Owner</option>
+                      <option value="1">Storage Manager</option>
+                      <option value="2">Sales Man</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="addFishermanPassword">New password</label>
+                    <input type="text" id="addFishermanPassword" class="form-input" placeholder="Enter new password">
+                  </div>
+                  <h3 id="fisherman_status"></h3>
+                  <button type="submit" class="btn btn-primary mt-3">
+                    <i class="fas fa-save"></i>
+                    <span>Add</span>
+                  </button>
+                </form>
+            </div>
+        </div>
+    </section>
+  <script>
+    document.addEventListener("DOMContentLoaded", function () {
+      editFisherman();
+    });
+  </script>
+{% endblock %}

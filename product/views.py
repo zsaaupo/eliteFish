@@ -38,7 +38,7 @@ class APIProductList(ListAPIView):
 
 class APIEditProduct(ListAPIView):
 
-    permission_classes = [IsAuthenticated, IsManagement]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, name):
         data = Product.objects.filter(name=name).first()
