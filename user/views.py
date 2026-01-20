@@ -42,7 +42,7 @@ class APIFishermanList(ListAPIView):
 
 class APIEditFisherman(ListAPIView):
 
-    permission_classes = [IsAuthenticated, IsManagement]
+    permission_classes = [IsAuthenticated]
 
     def get(self, request, email):
         data = FisherMan.objects.filter(email=email).first()
