@@ -76,7 +76,7 @@ function initProducts() {
                 <h3 class="product-title">${product.name}</h3>
                 <p class="product-description">${product.description || ""}</p>
                 <div class="product-footer">
-                  <div class="product-price">Price: ${product.price}</div>
+                  <div class="product-price">Price: ${product.selling_price}</div>
                   <div class="product-quantity">Quantity: ${product.quantity}</div>
                   <div class="product-source">Source: ${product.source}</div>
                   <div class="product-category">${categoryLabel}</div>
@@ -419,13 +419,21 @@ function initEventListeners() {
     if(saleProductForm){
         saleProductForm.addEventListener('submit', e => {
             e.preventDefault();
+          
+            const sellData = {
+                customer_name: $("#saleCustomerName").val(),
+                customer_phone: $("#saleCustomerPhone").val(),
+                customer_address: $("#saleCustomerAddress").val(),
+                quantity: $("#saleQuantity").val(),
+                unit_price: $("#saleProductPrice").val(),
+                total_amount: $("#saleTotalPrice").val(),
+                product: $("#saleProductName").val(),
+            };
 
             const productData = {
             name: $("#saleProductName").val(),
             quantity: parseFloat($("#saleQuantity").val()) * -1
             };
-
-            console.log(productData);
 
             $.ajax({
             type: "PUT",
@@ -434,6 +442,25 @@ function initEventListeners() {
             Authorization: "Bearer " + localStorage.getItem("access")
             },
             data: JSON.stringify(productData),
+            contentType: "application/json; charset=utf-8",
+            dataType: "json",
+            success: function (response) {
+                $('#product_status').html("");
+                $('#product_status').append(`${response.massage}`);
+            },
+            error: function (response) {
+                $('#product_status').html("");
+                $('#product_status').append(`${response.responseJSON.message}`);
+            }
+            });
+
+            $.ajax({
+            type: "POST",
+            url: "/log/sell_api",
+            headers: {
+            Authorization: "Bearer " + localStorage.getItem("access")
+            },
+            data: JSON.stringify(sellData),
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (response) {
