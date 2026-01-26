@@ -115,7 +115,7 @@ function editProduct(){
     url: url,
     success: function (product) {
         $("#editProductName").val(product.name);
-        $("#editProductPrice").val(product.price);
+        $("#editProductPrice").val(product.selling_price);
         $("#editProductQuantity").val(product.quantity);
         $("#editProductSource").val(product.source);
         $("#editProductDescription").val(product.description);
@@ -392,7 +392,7 @@ function initEventListeners() {
 
             const productData = {
             name: $("#editProductName").val(),
-            price: $("#editProductPrice").val()
+            selling_price: $("#editProductPrice").val()
             };
 
             $.ajax({

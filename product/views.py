@@ -174,9 +174,9 @@ class APIUpdateProductPrice(CreateAPIView):
                 result["message"] = "Name is required"
                 result["error"] = "Name"
                 return Response(result, status=HTTP_400_BAD_REQUEST)
-            if 'price' not in data or data['price'] == '':
-                result['massage'] = "Price is required."
-                result['error'] = "price"
+            if 'selling_price' not in data or data['selling_price'] == '':
+                result['massage'] = "Selling price is required."
+                result['error'] = "selling_price"
                 return Response(result, status=HTTP_400_BAD_REQUEST)
 
 
@@ -184,21 +184,21 @@ class APIUpdateProductPrice(CreateAPIView):
 
             if product:
 
-                if product.price != data['price']:
+                if product.selling_price != data['selling_price']:
 
-                    product.price = data['price']
+                    product.selling_price = data['selling_price']
                     product.modified_by = request.user.username
                     product.save()
 
                     result['status'] = HTTP_202_ACCEPTED
                     result['massage'] = "Success"
                     result['name'] = data['name']
-                    result['price'] = product.price
+                    result['selling_price'] = product.selling_price
                     return Response(result)
 
                 else:
                     result['status'] = HTTP_304_NOT_MODIFIED
-                    result['massage'] = ("Product price is already " + str(data['price']))
+                    result['massage'] = ("Product price is already " + str(data['selling_price']))
                     return Response(result)
 
             else:
