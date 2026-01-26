@@ -9,25 +9,43 @@
               <h3>Edit Fisherman</h3>
                 <form id="editFishermanForm">
                   {% csrf_token %}
-                  <div class="form-group">
-                    <label for="editFishermanName">Name</label>
-                    <input type="text" id="editFishermanName" class="form-input" placeholder="Enter name">
-                  </div>
-                  <div class="form-group">
-                    <label for="editFishermanEmail">Email</label>
-                    <input type="email" id="editFishermanEmail" class="form-input" placeholder="Enter email" disabled>
-                  </div>
-                  <div class="form-group">
-                    <label for="editFishermanPhone">Phone</label>
-                    <input type="text" id="editFishermanPhone" class="form-input" placeholder="Enter phone">
-                  </div>
-                  <div class="form-group">
-                    <label for="editFishermanDesignation">Designation</label>
-                    <select id="editFishermanDesignation" class="form-input" disabled>
-                      <option value="0">Business Owner</option>
-                      <option value="1">Storage Manager</option>
-                      <option value="2">Sales Man</option>
-                    </select>
+                <div class="product-form-grid">
+                    <div class="form-group">
+                      <label for="editFishermanName">Name</label>
+                      <input type="text" id="editFishermanName" class="form-input" placeholder="Enter name">
+                    </div>
+                    <div class="form-group">
+                      <label for="editFishermanEmail">Email</label>
+                      <input type="email" id="editFishermanEmail" class="form-input" placeholder="Enter email" disabled>
+                    </div>
+                    <div class="form-group">
+                      <label for="editFishermanPhone">Phone</label>
+                      <input type="text" id="editFishermanPhone" class="form-input" placeholder="Enter phone">
+                    </div>
+                    <div class="form-group">
+                      <label for="editFishermanDesignation">Designation</label>
+                      <select id="editFishermanDesignation" class="form-input" disabled>
+                        <option value="0">Business Owner</option>
+                        <option value="1">Storage Manager</option>
+                        <option value="2">Sales Man</option>
+                      </select>
+                    </div>
+                    <div class="form-group">
+                      <label for="editFishermanCreatedBy">Created By</label>
+                      <input type="text" id="editFishermanCreatedBy" class="form-input" disabled>
+                    </div>
+                    <div class="form-group">
+                      <label for="editFishermanCreatedAt">Created At</label>
+                      <input type="text" id="editFishermanCreatedAt" class="form-input" disabled>
+                    </div>
+                    <div class="form-group">
+                      <label for="editFishermanModifyBy">Modify By</label>
+                      <input type="text" id="editFishermanModifyBy" class="form-input" disabled>
+                    </div>
+                    <div class="form-group">
+                      <label for="editFishermanModifyAt">Modify At</label>
+                      <input type="text" id="editFishermanModifyAt" class="form-input" disabled>
+                    </div>
                   </div>
                   <h3 id="fisherman_status"></h3>
                   <button type="submit" class="btn btn-primary mt-3">

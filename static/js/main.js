@@ -122,6 +122,10 @@ function editProduct(){
         $("#editProductSource").val(product.source);
         $("#editProductDescription").val(product.description);
         $("#editProductCategory").val(product.category);
+        $("#editProductCreatedBy").val(product.created_by);
+        $("#editProductCreatedAt").val(product.created_at);
+        $("#editProductModifyBy").val(product.modified_by);
+        $("#editProductModifyAt").val(product.modified_at);
     },
     error: function (errormsg) {
         console.log(errormsg);
@@ -166,45 +170,10 @@ function restockProduct(){
             $("#restockProductSource").val(product.source);
             $("#restockProductDescription").val(product.description);
             $("#restockProductCategory").val(product.category);
-        },
-        error: function (errormsg) {
-            console.log(errormsg);
-        }
-        });
-}
-
-function editFisherman(){
-        var path = window.location.pathname.split('/');
-        var url = "/fisher_man/fisherman_edit_api/"+path[3];
-        console.log(url)
-        $.ajax({
-        headers: { Authorization: 'Bearer ' +localStorage.getItem('access')},
-        type: "GET",
-        url: url,
-        success: function (fisherman) {
-            $("#editFishermanName").val(fisherman.name);
-            $("#editFishermanEmail").val(fisherman.email);
-            $("#editFishermanPhone").val(fisherman.phone);
-            $("#editFishermanDesignation").val(fisherman.designation);
-        },
-        error: function (errormsg) {
-            console.log(errormsg);
-        }
-        });
-}
-
-function fisherman(email){
-        var url = "/fisher_man/fisherman_edit_api/"+email;
-        console.log(url)
-        $.ajax({
-        headers: { Authorization: 'Bearer ' +localStorage.getItem('access')},
-        type: "GET",
-        url: url,
-        success: function (fisherman) {
-            $("#FishermanName").val(fisherman.name);
-            $("#FishermanEmail").val(fisherman.email);
-            $("#FishermanPhone").val(fisherman.phone);
-            $("#FishermanDesignation").val(fisherman.designation);
+            $("#restockProductCreatedBy").val(product.created_by);
+            $("#restockProductCreatedAt").val(product.created_at);
+            $("#restockProductModifyBy").val(product.modified_by);
+            $("#restockProductModifyAt").val(product.modified_at);
         },
         error: function (errormsg) {
             console.log(errormsg);
@@ -326,6 +295,49 @@ function deactiveFisherman(email) {
   });
 }
 
+function editFisherman(){
+        var path = window.location.pathname.split('/');
+        var url = "/fisher_man/fisherman_edit_api/"+path[3];
+        console.log(url)
+        $.ajax({
+        headers: { Authorization: 'Bearer ' +localStorage.getItem('access')},
+        type: "GET",
+        url: url,
+        success: function (fisherman) {
+            console.log(fisherman)
+            $("#editFishermanName").val(fisherman.name);
+            $("#editFishermanEmail").val(fisherman.email);
+            $("#editFishermanPhone").val(fisherman.phone);
+            $("#editFishermanDesignation").val(fisherman.designation);
+            $("#editFishermanCreatedBy").val(fisherman.created_by);
+            $("#editFishermanCreatedAt").val(fisherman.created_at);
+            $("#editFishermanModifyBy").val(fisherman.modified_by);
+            $("#editFishermanModifyAt").val(fisherman.modified_at);
+        },
+        error: function (errormsg) {
+            console.log(errormsg);
+        }
+        });
+}
+
+function fisherman(email){
+        var url = "/fisher_man/fisherman_edit_api/"+email;
+        console.log(url)
+        $.ajax({
+        headers: { Authorization: 'Bearer ' +localStorage.getItem('access')},
+        type: "GET",
+        url: url,
+        success: function (fisherman) {
+            $("#FishermanName").val(fisherman.name);
+            $("#FishermanEmail").val(fisherman.email);
+            $("#FishermanPhone").val(fisherman.phone);
+            $("#FishermanDesignation").val(fisherman.designation);
+        },
+        error: function (errormsg) {
+            console.log(errormsg);
+        }
+        });
+}
 
 // ===== EVENT LISTENERS =====
 function initEventListeners() {
@@ -598,37 +610,11 @@ function initEventListeners() {
     }
 }
 
-// ===== TESTIMONIAL SLIDER =====
-function initTestimonialSlider() {
-    if (!prevBtn || !nextBtn || !testimonialTrack) return;
-
-    prevBtn.addEventListener('click', () => {
-        currentTestimonial = (currentTestimonial - 1 + totalTestimonials) % totalTestimonials;
-        updateTestimonialSlider();
-    });
-
-    nextBtn.addEventListener('click', () => {
-        currentTestimonial = (currentTestimonial + 1) % totalTestimonials;
-        updateTestimonialSlider();
-    });
-
-    setInterval(() => {
-        currentTestimonial = (currentTestimonial + 1) % totalTestimonials;
-        updateTestimonialSlider();
-    }, 5000);
-}
-
-function updateTestimonialSlider() {
-    testimonialTrack.style.transform = `translateX(-${currentTestimonial * 100}%)`;
-}
-
 // ===== HEADER =====
 function updateHeaderOnScroll() {
     if (!header) return;
     header.classList.toggle('scrolled', window.scrollY > 100);
 }
-
-function setActiveNavLink() {}
 
 // ===== ANIMATIONS =====
 function animateFloatingElements() {
