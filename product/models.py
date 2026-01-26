@@ -1,8 +1,9 @@
 from django.db import models
+from record.models import Audit
 
 # Create your models here.
 
-class Product(models.Model):
+class Product(Audit):
 
     name = models.CharField(max_length=50, primary_key=True)
     price = models.DecimalField(max_digits=10, decimal_places=2)

@@ -97,12 +97,15 @@ class ApiCreateFisherman(CreateAPIView):
                     user.groups.add(Group.objects.get(name='Owner'))
                 user.save()
 
+                requestedUser = request.user
+
                 fisherMan = FisherMan()
                 fisherMan.name = data['name']
                 fisherMan.email = data['email']
                 fisherMan.phone = data['phone']
                 fisherMan.designation = data['designation']
                 fisherMan.user = user
+                fisherMan.created_by = requestedUser.username
                 fisherMan.save()
 
                 result['status'] = HTTP_202_ACCEPTED
@@ -138,8 +141,6 @@ class ApiUpdateFisherman(CreateAPIView):
             if user:
 
                 fisherman = user.fisherman
-                userFlag = 0
-                fishermanFlag = 0
 
                 if 'active' in data:
                     if data['active'] == '' or data['active'] not in [0, 1]:
@@ -152,7 +153,7 @@ class ApiUpdateFisherman(CreateAPIView):
                             case 0:
                                 if user.is_active == 1:
                                     user.is_active = data['active']
-                                    userFlag = 1
+                                    user.save()
 
                                     result['active'] = user.is_active
                                 else:
@@ -162,7 +163,7 @@ class ApiUpdateFisherman(CreateAPIView):
                             case 1:
                                 if user.is_active == 0:
                                     user.is_active = data['active']
-                                    userFlag = 1
+                                    user.save()
 
                                     result['active'] = user.is_active
                                 else:
@@ -175,7 +176,6 @@ class ApiUpdateFisherman(CreateAPIView):
                         result['massage'] = "Name can not be null."
                     else:
                         fisherman.name = data['name']
-                        fishermanFlag = 1
                         result['name'] = data['name']
 
                 if 'phone' in data:
@@ -183,13 +183,11 @@ class ApiUpdateFisherman(CreateAPIView):
                         result['massage'] = "Phone can not be null."
                     else:
                         fisherman.phone = data['phone']
-                        fishermanFlag = 1
                         result['phone'] = data['phone']
 
-                if userFlag == 1:
-                    user.save()
-                if fishermanFlag == 1:
-                    fisherman.save()
+                requestedUser = request.user
+                fisherman.modified_by = requestedUser.username
+                fisherman.save()
 
                 result['status'] = HTTP_202_ACCEPTED
                 result['massage'] = "Success"

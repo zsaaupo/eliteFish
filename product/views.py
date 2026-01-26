@@ -93,6 +93,8 @@ class APIAddProduct(CreateAPIView):
                 else:
                     product.description = data['description']
 
+                product.created_by = request.user.username
+
                 product.save()
 
                 result['status'] = HTTP_202_ACCEPTED
@@ -136,6 +138,10 @@ class APIUpdateProductQuantity(CreateAPIView):
 
             if product:
                 product.quantity = product.quantity + data['quantity']
+
+                if data['quantity'] > 0:
+                    product.modified_by = request.user.username
+
                 product.save()
 
                 result['status'] = HTTP_202_ACCEPTED
@@ -181,6 +187,7 @@ class APIUpdateProductPrice(CreateAPIView):
                 if product.price != data['price']:
 
                     product.price = data['price']
+                    product.modified_by = request.user.username
                     product.save()
 
                     result['status'] = HTTP_202_ACCEPTED

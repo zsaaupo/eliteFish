@@ -1,9 +1,10 @@
 from django.contrib.auth.models import User
 from django.db import models
+from record.models import Audit
 
 # Create your models here.
 
-class FisherMan(models.Model):
+class FisherMan(Audit):
 
     user = models.OneToOneField(User, on_delete=models.PROTECT)
     name = models.CharField(max_length=50)
