@@ -55,9 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     initProducts();
     initEventListeners();
-    initTestimonialSlider();
     updateHeaderOnScroll();
-    setActiveNavLink();
     animateFloatingElements();
 });
 
@@ -143,7 +141,7 @@ function saleProduct(){
         url: url,
         success: function (product) {
             $("#saleProductName").val(product.name);
-            $("#saleProductPrice").val(product.price);
+            $("#saleProductPrice").val(product.selling_price);
             $("#saleProductQuantity").val(product.quantity);
             $("#saleProductSource").val(product.source);
             $("#saleProductDescription").val(product.description);
@@ -608,6 +606,12 @@ function initEventListeners() {
             });
         });
     }
+
+    $("#saleQuantity").on("input", function() {
+        const quantity = parseFloat($(this).val()) || 0;
+        const price = parseFloat($("#saleProductPrice").val()) || 0;
+        $("#saleTotalPrice").val((quantity * price).toFixed(2));
+    });
 }
 
 // ===== HEADER =====
