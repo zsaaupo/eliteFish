@@ -163,7 +163,7 @@ function restockProduct(){
         url: url,
         success: function (product) {
             $("#restockProductName").val(product.name);
-            $("#restockProductPrice").val(product.price);
+            $("#restockProductPrice").val(product.selling_price);
             $("#restockProductQuantity").val(product.quantity);
             $("#restockProductSource").val(product.source);
             $("#restockProductDescription").val(product.description);
