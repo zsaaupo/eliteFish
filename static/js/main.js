@@ -164,7 +164,8 @@ function restockProduct(){
         url: url,
         success: function (product) {
             $("#restockProductName").val(product.name);
-            $("#restockProductPrice").val(product.selling_price);
+            $("#restockBuyingPrice").val(product.buying_price);
+            $("#restockSellingPrice").val(product.selling_price);
             $("#restockProductQuantity").val(product.quantity);
             $("#restockProductSource").val(product.source);
             $("#restockProductDescription").val(product.description);
@@ -480,12 +481,23 @@ function initEventListeners() {
         restockProductForm.addEventListener('submit', e => {
             e.preventDefault();
 
+            const buyData = {
+              product: $("#restockProductName").val(),
+              buying_price: $("#restockBuyingPrice").val(),
+              quantity: $("#restockQuantity").val(),
+              source: $("#restockProductSource").val(),
+              description: $("#restockProductDescription").val(),
+              category: $("#restockProductCategory").val(),  
+              supplier_name: $("#restockSupplierName").val(),
+              supplier_address: $("#restockSupplierAddress").val(),
+              supplier_phone: $("#restockSupplierPhone").val(),
+              total_amount: $("#restockTotalAmount").val()
+            };
+
             const productData = {
             name: $("#restockProductName").val(),
             quantity: parseFloat($("#restockQuantity").val())
             };
-
-            console.log(productData);
 
             $.ajax({
             type: "PUT",
@@ -497,8 +509,30 @@ function initEventListeners() {
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (response) {
+              if (response.message == "Success") {
+                $.ajax({
+                type: "POST",
+                url: "/log/buy_api",
+                headers: {
+                Authorization: "Bearer " + localStorage.getItem("access")
+                },
+                data: JSON.stringify(buyData),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    $('#product_status').html("");
+                    $('#product_status').append(`${response.message}`);
+                },
+                error: function (response) {
+                    $('#product_status').html("");
+                    $('#product_status').append(`${response.responseJSON.message}`);
+                }
+                });
+              }
+              else{
                 $('#product_status').html("");
                 $('#product_status').append(`${response.message}`);
+              }
             },
             error: function (response) {
                 $('#product_status').html("");
@@ -680,6 +714,12 @@ function initEventListeners() {
         const quantity = parseFloat($(this).val()) || 0;
         const price = parseFloat($("#productPrice").val()) || 0;
         $("#productTotalAmount").val((quantity * price).toFixed(2));
+    });
+
+    $("#restockQuantity").on("input", function() {
+        const quantity = parseFloat($(this).val()) || 0;
+        const price = parseFloat($("#restockBuyingPrice").val()) || 0;
+        $("#restockTotalAmount").val((quantity * price).toFixed(2));
     });
 }
 
