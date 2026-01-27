@@ -1,10 +1,11 @@
 import json
-from rest_framework.generics import CreateAPIView
+from rest_framework.generics import CreateAPIView, ListAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.shortcuts import render
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_202_ACCEPTED, HTTP_226_IM_USED, HTTP_304_NOT_MODIFIED
-from .models import Sell, Buy
+from .models import Sell, Buy, Activity
+from .serializers import BuySerializer, SellSerializer, ActivitySerializer
 from user.views import IsManagement
 
 # Create your views here.
@@ -130,4 +131,37 @@ class APIBuyLog(CreateAPIView):
         except Exception as ex:
             result['message'] = str(ex)
             return Response(result)
+
+def buy_record(request):
+    return render(request, "buy_record.html")
+
+def sell_record(request):
+    return render(request, "sell_record.html")
+
+def activity_record(request):
+    return render(request, "activity_record.html")
+
+class APIBuyList(ListAPIView):
+    permission_classes = [IsAuthenticated, IsManagement]
+
+    def get(self, request, *args, **kwargs):
+        data = Buy.objects.all()
+        data = BuySerializer(data, many=True).data
+        return Response(data)
+
+class APISellList(ListAPIView):
+    permission_classes = [IsAuthenticated, IsManagement]
+
+    def get(self, request, *args, **kwargs):
+        data = Sell.objects.all()
+        data = SellSerializer(data, many=True).data
+        return Response(data)
+
+class APIActivityList(ListAPIView):
+    permission_classes = [IsAuthenticated, IsManagement]
+
+    def get(self, request, *args, **kwargs):
+        data = Activity.objects.all()
+        data = ActivitySerializer(data, many=True).data
+        return Response(data)
      

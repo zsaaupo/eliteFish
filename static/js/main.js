@@ -54,6 +54,13 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     initProducts();
+    if(window.location.pathname === '/log/buy/') {
+        initBuyRecords();
+    } else if(window.location.pathname === '/log/sell/') {
+        initSellRecords();
+    } else if(window.location.pathname === '/log/activity/') {
+        initActivityRecords();
+    }
     initEventListeners();
     updateHeaderOnScroll();
     animateFloatingElements();
@@ -98,6 +105,159 @@ function initProducts() {
             </div>
           `);
         }
+      },
+      error: function (errormsg) {
+        console.log(errormsg);
+      }
+    });
+}
+
+
+function initBuyRecords() {
+    $.ajax({
+      headers: { Authorization: 'Bearer ' +localStorage.getItem('access') },
+      type: "GET",
+      url: "/log/buy_list_api",
+      success: function (records) {
+        // Create table structure
+        $('.section-record').append(`
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Product</th>
+                            <th>Supplier</th>
+                            <th>Qty</th>
+                            <th>Buying Price</th>
+                            <th>Total</th>
+                            <th>Date</th>
+                            <th>Manager</th>
+                        </tr>
+                    </thead>
+                    <tbody id="buyRecordsBody">
+                    </tbody>
+                </table>
+            </div>
+        `);
+
+        records.forEach(record => {
+            const date = record.created_at;
+            $('#buyRecordsBody').append(`
+                <tr>
+                    <td>#${record.invoice_no}</td>
+                    <td>${record.product}</td>
+                    <td>
+                        <div class="supplier-info">
+                            <strong>${record.supplier_name}</strong><br>
+                            <small>${record.supplier_phone || ''}</small>
+                        </div>
+                    </td>
+                    <td>${record.quantity}</td>
+                    <td>${record.buying_price}</td>
+                    <td>${record.total_amount}</td>
+                    <td>${date}</td>
+                    <td>${record.buying_manager}</td>
+                </tr>
+            `);
+        });
+      },
+      error: function (errormsg) {
+        console.log(errormsg);
+      }
+    });
+}
+
+
+function initSellRecords() {
+    $.ajax({
+      headers: { Authorization: 'Bearer ' +localStorage.getItem('access') },
+      type: "GET",
+      url: "/log/sell_list_api",
+      success: function (records) {
+        // Create table structure
+        $('.section-record').append(`
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>ID</th>
+                            <th>Product</th>
+                            <th>Customer</th>
+                            <th>Qty</th>
+                            <th>Unit Price</th>
+                            <th>Total</th>
+                            <th>Date</th>
+                            <th>Seller</th>
+                        </tr>
+                    </thead>
+                    <tbody id="sellRecordsBody">
+                    </tbody>
+                </table>
+            </div>
+        `);
+
+        records.forEach(record => {
+            const date = record.created_at;
+            $('#sellRecordsBody').append(`
+                <tr>
+                    <td>#${record.invoice_no}</td>
+                    <td>${record.product}</td>
+                    <td>
+                        <div class="supplier-info">
+                            <strong>${record.customer_name}</strong><br>
+                            <small>${record.customer_phone || ''}</small>
+                        </div>
+                    </td>
+                    <td>${record.quantity}</td>
+                    <td>${record.unit_price}</td>
+                    <td>${record.total_amount}</td>
+                    <td>${date}</td>
+                    <td>${record.seller}</td>
+                </tr>
+            `);
+        });
+      },
+      error: function (errormsg) {
+        console.log(errormsg);
+      }
+    });
+}
+
+function initActivityRecords() {
+    $.ajax({
+      headers: { Authorization: 'Bearer ' +localStorage.getItem('access') },
+      type: "GET",
+      url: "/log/activity_list_api",
+      success: function (records) {
+        // Create table structure
+        $('.section-record').append(`
+            <div class="table-container">
+                <table class="data-table">
+                    <thead>
+                        <tr>
+                            <th>User</th>
+                            <th>Action</th>
+                            <th>Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="activityRecordsBody">
+                    </tbody>
+                </table>
+            </div>
+        `);
+
+        records.forEach(record => {
+            const date = record.time;
+            const action = record.is_login ? '<span style="color: green;">Login</span>' : '<span style="color: red;">Logout</span>';
+            $('#activityRecordsBody').append(`
+                <tr>
+                    <td>${record.user_name}</td>
+                    <td>${action}</td>
+                    <td>${date}</td>
+                </tr>
+            `);
+        });
       },
       error: function (errormsg) {
         console.log(errormsg);

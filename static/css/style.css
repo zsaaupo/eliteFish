@@ -1436,3 +1436,20 @@ footer {
 .mt-5 {
     margin-top: 50px;
 }
+
+/* ===== TABLE STYLES ===== */
+.data-table {
+    font-family: arial, sans-serif;
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 20px;
+    background: transparent;
+    color: white;
+}
+
+.data-table td, 
+.data-table th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+}
