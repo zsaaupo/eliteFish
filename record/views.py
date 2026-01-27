@@ -2,11 +2,15 @@ import json
 from rest_framework.generics import CreateAPIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
+from django.shortcuts import render
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_202_ACCEPTED, HTTP_226_IM_USED, HTTP_304_NOT_MODIFIED
 from .models import Sell, Buy
 from user.views import IsManagement
 
 # Create your views here.
+
+def record(request):
+    return render(request, 'record.html')
 
 class APISellLog(CreateAPIView):
 
