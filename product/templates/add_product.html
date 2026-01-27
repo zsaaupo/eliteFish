@@ -7,7 +7,7 @@
         <div class="container">
             <div class="dashboard-section">
               <h3>Add New Product</h3>
-              <form id="dashboardProductForm">
+              <form id="addProductForm">
                   {% csrf_token %}
                 <div class="product-form-grid">
 
@@ -38,7 +38,7 @@
                   <!-- Description -->
                   <div class="form-group form-full-width">
                     <label for="productDescription">Description</label>
-                    <textarea id="productDescription" class="form-input" placeholder="Enter product description"></textarea>
+                    <input type="text" id="productDescription" class="form-input" placeholder="Enter description">
                   </div>
 
                   <!-- Category -->
@@ -48,6 +48,26 @@
                       <option value="0">River fish</option>
                       <option value="1">Sea fish</option>
                     </select>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="productSupplierName">Suplier name</label>
+                    <input type="text" id="productSupplierName" class="form-input" placeholder="Enter suplier name" required>
+                  </div>
+
+                  <div class="form-group form-full-width">
+                    <label for="productSupplierAddress">Suplier address</label>
+                    <input type="text" id="productSupplierAddress" class="form-input" placeholder="Enter suplier address">
+                  </div>
+
+                  <div class="form-group">
+                    <label for="productSupplierPhone">Suplier phone</label>
+                    <input type="text" id="productSupplierPhone" class="form-input" placeholder="Enter suplier phone" required>
+                  </div>
+
+                  <div class="form-group">
+                    <label for="productTotalAmount">Total amount</label>
+                    <input type="number" id="productTotalAmount" class="form-input" placeholder="Enter total amount" disabled>
                   </div>
                 </div>
                   <h3 id="product_status"></h3>

@@ -29,7 +29,7 @@ class Buy(Audit):
     buying_manager = models.CharField(max_length=100)
     product = models.CharField(max_length=100)
     quantity = models.IntegerField()
-    unit_price = models.DecimalField(max_digits=10, decimal_places=2)
+    buying_price = models.DecimalField(max_digits=10, decimal_places=2)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
 
 class Activity(models.Model):

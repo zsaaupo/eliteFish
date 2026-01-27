@@ -17,7 +17,7 @@ const logoutBtn = document.getElementById('logoutBtn');
 const refreshProductsBtn = document.getElementById('refreshProducts');
 const productsGrid = document.getElementById('productsGrid');
 const dashboardProducts = document.getElementById('dashboardProducts');
-const dashboardProductForm = document.getElementById('dashboardProductForm');
+const addProductForm = document.getElementById('addProductForm');
 const editProductForm = document.getElementById('editProductForm');
 const saleProductForm = document.getElementById('saleProductForm');
 const restockProductForm = document.getElementById('restockProductForm');
@@ -115,6 +115,7 @@ function editProduct(){
     url: url,
     success: function (product) {
         $("#editProductName").val(product.name);
+        $("#editBuyingPrice").val(product.buying_price);
         $("#editProductPrice").val(product.selling_price);
         $("#editProductQuantity").val(product.quantity);
         $("#editProductSource").val(product.source);
@@ -406,7 +407,7 @@ function initEventListeners() {
             dataType: "json",
             success: function (response) {
                 $('#product_status').html("");
-                $('#product_status').append(`${response.massage}`);
+                $('#product_status').append(`${response.message}`);
             },
             error: function (response) {
                 $('#product_status').html("");
@@ -446,7 +447,7 @@ function initEventListeners() {
             dataType: "json",
             success: function (response) {
                 $('#product_status').html("");
-                $('#product_status').append(`${response.massage}`);
+                $('#product_status').append(`${response.message}`);
             },
             error: function (response) {
                 $('#product_status').html("");
@@ -465,7 +466,7 @@ function initEventListeners() {
             dataType: "json",
             success: function (response) {
                 $('#product_status').html("");
-                $('#product_status').append(`${response.massage}`);
+                $('#product_status').append(`${response.message}`);
             },
             error: function (response) {
                 $('#product_status').html("");
@@ -497,7 +498,7 @@ function initEventListeners() {
             dataType: "json",
             success: function (response) {
                 $('#product_status').html("");
-                $('#product_status').append(`${response.massage}`);
+                $('#product_status').append(`${response.message}`);
             },
             error: function (response) {
                 $('#product_status').html("");
@@ -507,17 +508,30 @@ function initEventListeners() {
         });
     }
 
-    if(dashboardProductForm){
-        dashboardProductForm.addEventListener('submit', e => {
+    if(addProductForm){
+        addProductForm.addEventListener('submit', e => {
             e.preventDefault();
 
+            const buyData = {
+              product: $("#productName").val(),
+              buying_price: $("#productPrice").val(),
+              quantity: $("#productQuantity").val(),
+              source: $("#productSource").val(),
+              description: $("#productDescription").val(),
+              category: $("#productCategory").val(),  
+              supplier_name: $("#productSupplierName").val(),
+              supplier_address: $("#productSupplierAddress").val(),
+              supplier_phone: $("#productSupplierPhone").val(),
+              total_amount: $("#productTotalAmount").val()
+            }
+
             const productData = {
-            name: $("#productName").val(),
-            price: $("#productPrice").val(),
-            quantity: $("#productQuantity").val(),
-            source: $("#productSource").val(),
-            description: $("#productDescription").val(),
-            category: $("#productCategory").val()
+              name: $("#productName").val(),
+              buying_price: $("#productPrice").val(),
+              quantity: $("#productQuantity").val(),
+              source: $("#productSource").val(),
+              description: $("#productDescription").val(),
+              category: $("#productCategory").val(),
             };
 
             $.ajax({
@@ -530,14 +544,36 @@ function initEventListeners() {
             contentType: "application/json; charset=utf-8",
             dataType: "json",
             success: function (response) {
+              if (response.message == "Success") {
+                $.ajax({
+                type: "POST",
+                url: "/log/buy_api",
+                headers: {
+                Authorization: "Bearer " + localStorage.getItem("access")
+                },
+                data: JSON.stringify(buyData),
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (response) {
+                    $('#product_status').html("");
+                    $('#product_status').append(`${response.message}`);
+                },
+                error: function (response) {
+                    $('#product_status').html("");
+                    $('#product_status').append(`${response.responseJSON.message}`);
+                }
+                });
+              }else{
                 $('#product_status').html("");
-                $('#product_status').append(`${response.massage}`);
+                $('#product_status').append(`${response.message}`);
+              }
             },
             error: function (response) {
                 $('#product_status').html("");
                 $('#product_status').append(`${response.responseJSON.message}`);
             }
             });
+
         });
     }
 
@@ -562,7 +598,7 @@ function initEventListeners() {
             dataType: "json",
             success: function (response) {
                 $('#fisherman_status').html("");
-                $('#fisherman_status').append(`${response.massage}`);
+                $('#fisherman_status').append(`${response.message}`);
             },
             error: function (response) {
                 $('#fisherman_status').html("");
@@ -591,11 +627,11 @@ function initEventListeners() {
             dataType: "json",
             success: function (response) {
                 $('#fisherman_status').html("");
-                $('#fisherman_status').append(`${response.massage}`);
+                $('#fisherman_status').append(`${response.message}`);
             },
             error: function (response) {
                 $('#fisherman_status').html("");
-                $('#fisherman_status').append(`${response.massage}`);
+                $('#fisherman_status').append(`${response.message}`);
             }
             });
         });
@@ -624,11 +660,11 @@ function initEventListeners() {
             dataType: "json",
             success: function (response) {
                 $('#fisherman_status').html("");
-                $('#fisherman_status').append(`${response.massage}`);
+                $('#fisherman_status').append(`${response.message}`);
             },
             error: function (response) {
                 $('#fisherman_status').html("");
-                $('#fisherman_status').append(`${response.massage}`);
+                $('#fisherman_status').append(`${response.message}`);
             }
             });
         });
@@ -638,6 +674,12 @@ function initEventListeners() {
         const quantity = parseFloat($(this).val()) || 0;
         const price = parseFloat($("#saleProductPrice").val()) || 0;
         $("#saleTotalPrice").val((quantity * price).toFixed(2));
+    });
+
+    $("#productQuantity").on("input", function() {
+        const quantity = parseFloat($(this).val()) || 0;
+        const price = parseFloat($("#productPrice").val()) || 0;
+        $("#productTotalAmount").val((quantity * price).toFixed(2));
     });
 }
 

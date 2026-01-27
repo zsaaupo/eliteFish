@@ -6,7 +6,7 @@ from record.models import Audit
 class Product(Audit):
 
     name = models.CharField(max_length=50, primary_key=True)
-    selling_price = models.DecimalField(max_digits=10, decimal_places=2)
+    selling_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     buying_price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.PositiveIntegerField(null=True, blank=True)
     category = models.IntegerField(choices=((0, 'River fish'),(1, 'Sea fish')))

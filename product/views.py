@@ -60,20 +60,20 @@ class APIAddProduct(CreateAPIView):
                 result["message"] = "Name is required"
                 result["error"] = "Name"
                 return Response(result, status=HTTP_400_BAD_REQUEST)
-            if 'price' not in data or data['price'] == '':
-                result['massage'] = "Price is required."
-                result['error'] = "price"
+            if 'buying_price' not in data or data['buying_price'] == '':
+                result['message'] = "Buying price is required."
+                result['error'] = "buying_price"
                 return Response(result, status=HTTP_400_BAD_REQUEST)
             if 'quantity' not in data or data['quantity'] == '':
-                result['massage'] = "Quantity is required."
+                result['message'] = "Quantity is required."
                 result['error'] = "quantity"
                 return Response(result, status=HTTP_400_BAD_REQUEST)
             if 'category' not in data or data['category'] == '':
-                result['massage'] = "Must select a category."
+                result['message'] = "Must select a category."
                 result['error'] = "category"
                 return Response(result, status=HTTP_400_BAD_REQUEST)
             if 'source' not in data or data['source'] == '':
-                result['massage'] = "source is required."
+                result['message'] = "source is required."
                 result['error'] = "source"
                 return Response(result, status=HTTP_400_BAD_REQUEST)
 
@@ -83,7 +83,7 @@ class APIAddProduct(CreateAPIView):
 
                 product = Product()
                 product.name = data['name']
-                product.price = data['price']
+                product.buying_price = data['buying_price']
                 product.quantity = data['quantity']
                 product.category = data['category']
                 product.source = data['source']
@@ -98,7 +98,7 @@ class APIAddProduct(CreateAPIView):
                 product.save()
 
                 result['status'] = HTTP_202_ACCEPTED
-                result['massage'] = "Success"
+                result['message'] = "Success"
                 result['name'] = data['name']
                 result['quantity'] = data['quantity']
                 return Response(result)
@@ -106,11 +106,11 @@ class APIAddProduct(CreateAPIView):
             else:
 
                 result['status'] = HTTP_226_IM_USED
-                result['massage'] = "Product already exists."
+                result['message'] = "Product already exists."
                 return Response(result)
 
         except Exception as ex:
-            result['massage'] = str(ex)
+            result['message'] = str(ex)
             return Response(result)
 
 class APIUpdateProductQuantity(CreateAPIView):
@@ -129,7 +129,7 @@ class APIUpdateProductQuantity(CreateAPIView):
                 result["error"] = "Name"
                 return Response(result, status=HTTP_400_BAD_REQUEST)
             if 'quantity' not in data or data['quantity'] == '':
-                result['massage'] = "Quantity is required."
+                result['message'] = "Quantity is required."
                 result['error'] = "quantity"
                 return Response(result, status=HTTP_400_BAD_REQUEST)
 
@@ -145,18 +145,18 @@ class APIUpdateProductQuantity(CreateAPIView):
                 product.save()
 
                 result['status'] = HTTP_202_ACCEPTED
-                result['massage'] = "Success"
+                result['message'] = "Success"
                 result['name'] = data['name']
                 result['quantity'] = product.quantity
                 return Response(result)
 
             else:
                 result['status'] = HTTP_400_BAD_REQUEST
-                result['massage'] = ("Product not exist")
+                result['message'] = ("Product not exist")
                 return Response(result)
 
         except Exception as ex:
-            result['massage'] = str(ex)
+            result['message'] = str(ex)
             return Response(result)
 
 class APIUpdateProductPrice(CreateAPIView):
@@ -175,7 +175,7 @@ class APIUpdateProductPrice(CreateAPIView):
                 result["error"] = "Name"
                 return Response(result, status=HTTP_400_BAD_REQUEST)
             if 'selling_price' not in data or data['selling_price'] == '':
-                result['massage'] = "Selling price is required."
+                result['message'] = "Selling price is required."
                 result['error'] = "selling_price"
                 return Response(result, status=HTTP_400_BAD_REQUEST)
 
@@ -191,21 +191,21 @@ class APIUpdateProductPrice(CreateAPIView):
                     product.save()
 
                     result['status'] = HTTP_202_ACCEPTED
-                    result['massage'] = "Success"
+                    result['message'] = "Success"
                     result['name'] = data['name']
                     result['selling_price'] = product.selling_price
                     return Response(result)
 
                 else:
                     result['status'] = HTTP_304_NOT_MODIFIED
-                    result['massage'] = ("Product price is already " + str(data['selling_price']))
+                    result['message'] = ("Product price is already " + str(data['selling_price']))
                     return Response(result)
 
             else:
                 result['status'] = HTTP_400_BAD_REQUEST
-                result['massage'] = ("Product not exist")
+                result['message'] = ("Product not exist")
                 return Response(result)
 
         except Exception as ex:
-            result['massage'] = str(ex)
+            result['message'] = str(ex)
             return Response(result)
