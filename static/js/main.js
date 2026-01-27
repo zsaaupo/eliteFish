@@ -54,7 +54,9 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     initProducts();
-    if(window.location.pathname === '/log/buy/') {
+    if(window.location.pathname === '/fish/dashboard') {
+        initDashboardStats();
+    } else if(window.location.pathname === '/log/buy/') {
         initBuyRecords();
     } else if(window.location.pathname === '/log/sell/') {
         initSellRecords();
@@ -258,6 +260,23 @@ function initActivityRecords() {
                 </tr>
             `);
         });
+      },
+      error: function (errormsg) {
+        console.log(errormsg);
+      }
+    });
+}
+
+
+function initDashboardStats() {
+    $.ajax({
+      headers: { Authorization: 'Bearer ' +localStorage.getItem('access') },
+      type: "GET",
+      url: "/fish/dashboard_stats_api",
+      success: function (data) {
+        $("#totalSell").text(data.total_sell);
+        $("#totalBuy").text(data.total_buy);
+        $("#totalStock").text(data.total_stock);
       },
       error: function (errormsg) {
         console.log(errormsg);

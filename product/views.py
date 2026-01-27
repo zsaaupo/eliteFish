@@ -1,7 +1,9 @@
 import json
 
 from django.shortcuts import render
+from django.db.models import Sum
 from rest_framework.generics import CreateAPIView, ListAPIView
+from rest_framework.views import APIView
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_202_ACCEPTED, HTTP_226_IM_USED, HTTP_304_NOT_MODIFIED
@@ -9,11 +11,15 @@ from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_202_ACCEPTED, HTTP_
 from user.views import IsManagement
 from .models import *
 from .seriallizer import ProductSerializer
+from record.models import Sell, Buy
 
 
 # Create your views here.
 def dashboard(request):
     return render(request, "index.html")
+
+def dashboardMain(request):
+    return render(request, "dashboard.html")
 
 def addProduct(request):
     return render(request, "add_product.html")
@@ -26,6 +32,21 @@ def saleProduct(request, name):
 
 def restockProduct(request, name):
     return render(request, "restock.html")
+
+class APIDashboardStats(APIView):
+    permission_classes = [IsAuthenticated]
+
+    def get(self, request, *args, **kwargs):
+        total_sell = Sell.objects.aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+        total_buy = Buy.objects.aggregate(Sum('total_amount'))['total_amount__sum'] or 0
+        total_stock = Product.objects.aggregate(Sum('quantity'))['quantity__sum'] or 0
+
+        data = {
+            'total_sell': total_sell,
+            'total_buy': total_buy,
+            'total_stock': total_stock
+        }
+        return Response(data)
 
 class APIProductList(ListAPIView):
 

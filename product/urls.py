@@ -3,6 +3,7 @@ from .views import *
 
 urlpatterns = [
     path('add_product', addProduct),
+    path('dashboard', dashboardMain),
     path('edit_product/<str:name>', editProduct),
     path('restock_product/<str:name>', restockProduct),
     path('sale/<str:name>', saleProduct),
@@ -11,4 +12,5 @@ urlpatterns = [
     path('update_quantity_api', APIUpdateProductQuantity.as_view()),
     path('update_price_api', APIUpdateProductPrice.as_view()),
     path('products_api', APIProductList.as_view()),
+    path('dashboard_stats_api', APIDashboardStats.as_view()),
 ]
