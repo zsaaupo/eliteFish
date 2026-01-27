@@ -380,11 +380,28 @@ function initEventListeners() {
 
     if (logoutBtn) {
         logoutBtn.addEventListener('click', () => {
-            localStorage.removeItem("full_name");
-            localStorage.removeItem("access");
-            localStorage.removeItem("email");
-            localStorage.removeItem("group");
-            window.location.href = '/fisher_man/log_in';
+          $.ajax({
+              type: "POST",
+              url: "/fisher_man/logout_api",
+              headers: {
+              Authorization: "Bearer " + localStorage.getItem("access")
+              },
+              data: JSON.stringify({}),
+              contentType: "application/json; charset=utf-8",
+              dataType: "json",
+              success: function(response){
+                  if(response.status == 200){
+                      localStorage.removeItem("full_name");
+                      localStorage.removeItem("access");
+                      localStorage.removeItem("email");
+                      localStorage.removeItem("group");
+                      window.location.href = '/fisher_man/log_in';
+                  }
+              },
+              error: function(response){
+                console.log(response);  
+              }
+          });
         });
     }
 

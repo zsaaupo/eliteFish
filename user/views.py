@@ -9,6 +9,7 @@ from rest_framework.status import HTTP_400_BAD_REQUEST, HTTP_401_UNAUTHORIZED, H
 from rest_framework.utils import json
 from rest_framework.views import APIView
 from rest_framework_simplejwt.tokens import RefreshToken
+from record.models import Activity
 from .models import FisherMan
 from .seriallizer import FisherManSerializer
 
@@ -272,7 +273,41 @@ class ApiLogIn(APIView):
                     data['token'] = str(token)
                     data['status'] = HTTP_200_OK
 
+                    activity = Activity()
+                    activity.user_name = user.username
+                    activity.is_login = True
+                    activity.save()
+
                     return Response(data)
+
+        except Exception as e:
+            print("exp")
+            result['message'] = str(e)
+            return Response(result)
+
+class ApiLogOut(APIView):
+
+    permission_classes = [IsAuthenticated]
+
+    def post(self, request, *args, **kwargs):
+        result = {}
+
+        try:
+            requestedUser = request.user
+            user = User.objects.filter(username=requestedUser.username).first()
+
+            if not user:
+                result['message'] = "Account not found."
+                return Response(result, status=HTTP_404_NOT_FOUND)
+            else:
+                activity = Activity()
+                activity.user_name = user.username
+                activity.is_login = False
+                activity.save()
+
+                result['status'] = HTTP_200_OK
+                result['message'] = "Success"
+                return Response(result)
 
         except Exception as e:
             print("exp")
