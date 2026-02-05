@@ -99,7 +99,7 @@ function initProducts() {
                     </button>
                   ` : ""}
                   <button class="action-btn edit" onclick="window.location.href='/fish/sale/${product.name}'">
-                    <i class="fa-solid fa-shop"></i>
+                    <i class="fas fa-shopping-cart"></i>
                   </button>
                   </div>
                 </div>
@@ -578,7 +578,12 @@ function initEventListeners() {
                   }
               },
               error: function(response){
-                console.log(response);  
+                console.log(response);
+                localStorage.removeItem("full_name");
+                localStorage.removeItem("access");
+                localStorage.removeItem("email");
+                localStorage.removeItem("group");
+                window.location.href = '/fisher_man/log_in';
               }
           });
         });
