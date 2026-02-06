@@ -9,6 +9,11 @@ The **Fish Storage Management System** is a full-stack Django application design
 *   **Authentication:** JWT (JSON Web Tokens) via `simple_jwt`
 *   **Frontend:** Django Templates + jQuery (AJAX interactions)
 
+## Live Link & Credentials
+*   **Live Link:** [https://elitefish.pythonanywhere.com/](https://elitefish.pythonanywhere.com/)
+*   **Login Email:** `fisherman01@elite.com`
+*   **Login Password:** `123456`
+
 ## 2. Setup & Installation
 
 Follow these steps to set up the project locally.
