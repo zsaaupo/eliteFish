@@ -179,14 +179,14 @@ Tracks business transactions and user actions.
 
 The system uses a group-based permission model enforced by the `IsManagement` permission class.
 
-| Role | Designation ID | Create Users | Create Products | Update Price | Restock | View Dashboard |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Owner** | 0 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Manager** | 1 | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **Sales Man**| 2 | ❌ | ❌ | ❌ | ❌ | ✅ |
+| Role | Designation ID | Create Users | Create Products | Update Price | Restock | Sell Products | View Dashboard |
+| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
+| **Owner** | 0 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Manager** | 1 | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
+| **Sales Man**| 2 | ❌ | ❌ | ❌ | ❌ | ✅ | ❌ |
 
-*   **Restocking**: All authenticated users (including Sales Men) can update product quantities (restock).
-*   **Management**: Only Owners and Managers can create new products, change prices, or manage staff accounts.
+*   **Sell Products**: All authenticated users (including Sales Men) can sell products.
+*   **Management**: Only Owners and Managers can create new products, change prices, Restock, or manage staff accounts.
 
 ## 7. Frontend Architecture
 The frontend is built using **Django Templates** served directly by views, but they act as "Single Page Application" shells. 
